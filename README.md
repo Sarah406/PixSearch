@@ -9,7 +9,7 @@ Moteur de recherche d'images (projet académique, avril 2025) sur le dataset Uns
 4. `indexation.py` : création de l'index Elasticsearch (analyseur français, autocomplétion) et indexation des documents de `output_vectors.json`.
 5. `app.py` : application Flask avec les routes `/` (accueil), `/search` (recherche) et `/suggest` (autocomplétion).
 
-La recherche interroge Elasticsearch sur les mots-clés et la description, avec tolérance aux fautes de frappe.
+La recherche interroge Elasticsearch sur les mots-clés (poids 5) et la description (poids 2, avec tolérance aux fautes de frappe).
 
 ## Utilisation
 Depuis le dossier `src/`, avec Elasticsearch 8.17 lancé sur http://localhost:9200 :
@@ -21,10 +21,11 @@ Depuis le dossier `src/`, avec Elasticsearch 8.17 lancé sur http://localhost:92
     python app.py
 
 Dépendances : `pip install -r requirements.txt`
+
 Le dataset n'est pas inclus : il se télécharge sur le site officiel d'Unsplash (voir leurs conditions d'utilisation).
 
 ## Limites
-- Modèles pré-entraînés utilisés tels quels, sans entraînement ni évaluation chiffrée.
+- Modèles pré-entraînés utilisés tels quels : aucun entraînement ni évaluation chiffrée dans ce dépôt.
 - Les vecteurs visuels et TF-IDF sont calculés mais ne sont pas utilisés par la requête de recherche, qui repose sur Elasticsearch et le texte.
 - Les vecteurs visuels ne sont calculés que pour 500 documents.
-- La traduction des requêtes ne couvre que trois mots (ville, montagne, plage).
+- La traduction des requêtes se limite à un dictionnaire de trois mots (ville, montagne, plage), appliqué seulement si la requête entière correspond.
