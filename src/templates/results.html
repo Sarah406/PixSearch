@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Résultats pour "{{ query }}"</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container results-container">
+
+        <h2 class="results-title">Résultats pour <em>"{{ query }}"</em></h2>
+
+        <div class="grid">
+            {% for item in results %}
+            <div class="card">
+                <img src="{{ item._source.image_url or '/static/default.jpg' }}"
+                     onerror="this.onerror=null;this.src='/static/default.jpg';"
+                     loading="lazy"
+                     alt="{{ item._source.description|default('Image sans description')|truncate(50) }}">
+
+                <div class="content">
+                    <span class="score">{{ "%.1f"|format(item._score) }}/10</span>
+                    
+                    {# Highlight du mot-clé recherché dans la description #}
+                    {% set highlight = query.lower() %}
+                    <p>
+                        {{ item._source.description|default('Aucune description disponible')
+                            |replace(highlight, '<mark>' ~ highlight ~ '</mark>')|safe }}
+                    </p>
+
+                    {% if item._source.keywords %}
+                        <div class="keywords">
+                            {% for kw in item._source.keywords[:5] %}
+                            <span>{{ kw }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="keywords"><span>Aucun mot-clé</span></div>
+                    {% endif %}
+
+                    <div class="views">👁 {{ item._source.views|format_number }} vues</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
