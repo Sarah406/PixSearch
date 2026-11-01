@@ -1,0 +1,12 @@
+pandas
+scikit-learn
+scipy
+numpy
+pillow
+requests
+tqdm
+torch
+torchvision
+ultralytics
+flask
+elasticsearch>=8.17,<9

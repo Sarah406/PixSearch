@@ -218,3 +218,18 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+documents.json
+output_vectors.json
+*.pt
+*.npz
+*.pkl
+*.tsv000
+*.p12
+*.keystore
+.venv/
+elasticsearch-*/
+unsplash-research-dataset-lite-latest/
+MyDataBase/
+MAC/
+__MACOSX/

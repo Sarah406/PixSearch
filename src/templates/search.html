@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PixSearch</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1><span class="pix">Pix</span><span class="search">Search</span></h1>
+    <div class="container">
+        <form action="/search" method="GET">
+            <input type="text" name="q" id="search-input" autocomplete="off" placeholder="Rechercher..." required>
+            <button type="submit">Rechercher</button>
+            <div id="suggestions" class="suggestions-container"></div>
+        </form>
+    </div>
+
+    <script>
+        const input = document.getElementById('search-input');
+        const suggestionsDiv = document.getElementById('suggestions');
+        
+        input.addEventListener('input', async (e) => {
+            const query = e.target.value.trim();
+            if (query.length < 2) {
+                suggestionsDiv.innerHTML = '';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/suggest?q=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error('Erreur de suggestion');
+                
+                const suggestions = await response.json();
+                
+                suggestionsDiv.innerHTML = suggestions.length > 0 
+                    ? suggestions.map(s => 
+                        `<div class="suggestion-item" onclick="selectSuggestion('${s.replace(/'/g, "\\'")}')">${s}</div>`
+                    ).join('')
+                    : '<div class="suggestion-item">Aucun résultat</div>';
+            } catch (error) {
+                console.error("Erreur:", error);
+                suggestionsDiv.innerHTML = '<div class="suggestion-item error">Erreur de chargement</div>';
+            }
+        });
+        
+        function selectSuggestion(suggestion) {
+            input.value = suggestion;
+            suggestionsDiv.innerHTML = '';
+            // Soumet automatiquement le formulaire
+            document.querySelector('form').submit();
+        }
+
+        // Ferme les suggestions quand on clique ailleurs
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target)) {
+                suggestionsDiv.innerHTML = '';
+            }
+        });
+    </script>
+</body>
+</html>
